@@ -1,0 +1,27 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "scraper for websites",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^3.13.0",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-react": "^6.8.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vviital/scraper-on-streams.git"
+  },
+  "author": "vviital",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vviital/scraper-on-streams/issues"
+  },
+  "homepage": "https://github.com/vviital/scraper-on-streams#readme"
+}
