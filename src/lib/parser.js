@@ -15,7 +15,8 @@ const getQuestion = ($, elem) =>
     .contents()
     .last()
     .text()
-    .replace('\n', ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s{2,}/g, ' ')
     .trim();
 
 const getAnswer = ($, elem) =>
@@ -24,14 +25,53 @@ const getAnswer = ($, elem) =>
     .contents()
     .last()
     .text()
-    .replace('\n', ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s{2,}/g, ' ')
     .trim();
 
-function extractQuestions($) {
+const getPathCriteria = ($, elem) =>
+  $('.PassCriteria', elem)
+    .parent()
+    .contents()
+    .last()
+    .text()
+    .replace(/\n/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+    .split(';')
+    .filter(value => value);
+
+const getMaterials = ($, elem) => {
+  $('.razdatka', elem)
+    .text()
+    .replace(/\n/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+};
+
+const getQuestionResources = ($, elem) =>
+  $('strong.Question', elem)
+    .parent()
+    .children('img')
+    .map((i, img) => $(img).attr('src'))
+    .toArray();
+
+const getAnswerResources = ($, elem) =>
+  $('.collapsible', elem)
+    .find('img')
+    .map((i, img) => $(img).attr('src'))
+    .toArray();
+
+function extractQuestions($, { url }) {
   const questions = $('.question')
     .map((i, elem) => ({
+      source: url,
       question: getQuestion($, elem),
       answer: getAnswer($, elem),
+      pathCriteria: getPathCriteria($, elem),
+      materials: getMaterials($, elem),
+      questionResources: getQuestionResources($, elem),
+      answerResources: getAnswerResources($, elem),
     }))
     .toArray();
 
@@ -40,11 +80,11 @@ function extractQuestions($) {
 }
 
 
-module.exports = function (body) {
+module.exports = function (body, options) {
   const $ = cheerio.load(body);
 
   const urls = extractLinks($);
-  const questions = extractQuestions($);
+  const questions = extractQuestions($, options);
 
   return { questions, urls };
 };

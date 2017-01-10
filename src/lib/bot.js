@@ -1,6 +1,7 @@
 const fs = require('fs');
 const url = require('url');
 const scrap = require('./scrap');
+const farmhash = require('farmhash');
 
 module.exports = function scrapper({
   baseurl,
@@ -8,6 +9,7 @@ module.exports = function scrapper({
   filename = 'tmp',
 }) {
   const visited = new Set();
+  const hashSet = new Set();
   const queue = [];
   const resultFileStream = fs.createWriteStream(filename, { autoClose: false });
   const { hostname, protocol, pathname } = url.parse(baseurl);
@@ -42,6 +44,12 @@ module.exports = function scrapper({
     Array.prototype.push.apply(queue, object.urls);
 
     object.questions
+      .filter(({ question }) => {
+        const hash = farmhash.hash64(question);
+        if (hashSet.has(hash)) return false;
+        hashSet.add(hash);
+        return true;
+      })
       .reduce((stream, question) => {
         stream.push(`${JSON.stringify(question)}\n`);
         return stream;

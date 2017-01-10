@@ -7,7 +7,7 @@ function scrap(url, fn) {
   const stream = through({ objectMode: true }, fn);
   http.get(url, (res) => {
     res.setEncoding('utf8');
-    res.pipe(concat(body => stream.end(parse(body))));
+    res.pipe(concat(body => stream.end(parse(body, { url }))));
   });
 
   return stream;
