@@ -3,6 +3,7 @@ const url = require('url');
 const scrap = require('./scrap');
 const farmhash = require('farmhash');
 const logger = require('./logger');
+const zlib = require('zlib');
 
 module.exports = function scrapper({
   baseurl,
@@ -13,10 +14,16 @@ module.exports = function scrapper({
   const hashSet = new Set();
   const queue = [];
   const resultFileStream = fs.createWriteStream(filename, { autoClose: false });
+  const zippedResultFileStream = fs.createWriteStream(`${filename}.gz`);
   const { hostname, protocol, pathname } = url.parse(baseurl);
   const startTime = Date.now();
-  let loaded = 0;
 
+  resultFileStream.on('finish', () => (
+    fs.createReadStream(filename)
+      .pipe(zlib.createGzip())
+      .pipe(zippedResultFileStream)));
+
+  let loaded = 0;
   let currentCount = 0;
 
   queue.push(pathname);
@@ -38,6 +45,7 @@ module.exports = function scrapper({
         currentCount += 1;
       }
     }
+
     if (currentCount === 0 && queue.length === 0) {
       const endTime = Date.now();
       logger.info(`Finished in ${(endTime - startTime) / 1000}, mined ${hashSet.size} questions`);
