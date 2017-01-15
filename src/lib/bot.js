@@ -1,3 +1,4 @@
+require('events').EventEmitter.prototype._maxListeners = 30;
 const fs = require('fs');
 const url = require('url');
 const scrap = require('./scrap');
@@ -58,7 +59,8 @@ module.exports = function scrapper({
   }
 
   function write(object, _, next) {
-    Array.prototype.push.apply(queue, object.urls);
+    Array.prototype.push.apply(queue,
+      object.urls.filter((transition => queue.indexOf(transition) === -1)));
 
     object.questions
       .filter(({ question }) => {
