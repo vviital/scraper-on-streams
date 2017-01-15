@@ -5,6 +5,10 @@ const farmhash = require('farmhash');
 const logger = require('./logger');
 const zlib = require('zlib');
 
+if (!fs.existsSync('res')) {
+  fs.mkdirSync('res');
+}
+
 module.exports = function scrapper({
   baseurl,
   limit,
@@ -13,8 +17,8 @@ module.exports = function scrapper({
   const visited = new Set();
   const hashSet = new Set();
   const queue = [];
-  const resultFileStream = fs.createWriteStream(filename, { autoClose: false });
-  const zippedResultFileStream = fs.createWriteStream(`${filename}.gz`);
+  const resultFileStream = fs.createWriteStream(`res/${filename}`, { autoClose: false });
+  const zippedResultFileStream = fs.createWriteStream(`res/${filename}.gz`);
   const { hostname, protocol, pathname } = url.parse(baseurl);
   const startTime = Date.now();
 
