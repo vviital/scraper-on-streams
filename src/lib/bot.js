@@ -14,6 +14,8 @@ module.exports = function scrapper({
   const queue = [];
   const resultFileStream = fs.createWriteStream(filename, { autoClose: false });
   const { hostname, protocol, pathname } = url.parse(baseurl);
+  const startTime = Date.now();
+  let loaded = 0;
 
   let currentCount = 0;
 
@@ -37,6 +39,8 @@ module.exports = function scrapper({
       }
     }
     if (currentCount === 0 && queue.length === 0) {
+      const endTime = Date.now();
+      logger.info(`Finished in ${(endTime - startTime) / 1000}, mined ${hashSet.size} questions`);
       resultFileStream.end();
     }
   }
@@ -57,8 +61,9 @@ module.exports = function scrapper({
       }, this);
 
     process.nextTick(() => {
+      loaded += 1;
       currentCount -= 1;
-      console.log(visited.size);
+      logger.info(`Loaded ${loaded}`);
       startLoad();
     });
 
