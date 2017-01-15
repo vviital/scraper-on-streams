@@ -2,6 +2,7 @@ const fs = require('fs');
 const url = require('url');
 const scrap = require('./scrap');
 const farmhash = require('farmhash');
+const logger = require('./logger');
 
 module.exports = function scrapper({
   baseurl,
