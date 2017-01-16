@@ -24,7 +24,7 @@ module.exports = function scrapper({
   const startTime = Date.now();
 
   resultFileStream.on('finish', () => (
-    fs.createReadStream(filename)
+    fs.createReadStream(`res/${filename}`)
       .pipe(zlib.createGzip())
       .pipe(zippedResultFileStream)));
 
@@ -54,6 +54,7 @@ module.exports = function scrapper({
     if (currentCount === 0 && queue.length === 0) {
       const endTime = Date.now();
       logger.info(`Finished in ${(endTime - startTime) / 1000}, mined ${hashSet.size} questions`);
+      logger.info(JSON.stringify(process.memoryUsage()));
       resultFileStream.end();
     }
   }
@@ -77,7 +78,9 @@ module.exports = function scrapper({
     process.nextTick(() => {
       loaded += 1;
       currentCount -= 1;
-      logger.info(`Loaded ${loaded}`);
+      const memory = process.memoryUsage();
+      const div = 1024 * 1024;
+      logger.info(`Loaded: ${loaded} rss: ${memory.rss / div} heapTotal: ${memory.heapTotal / div} heapUsed: ${memory.heapUsed / div}`);
       startLoad();
     });
 
