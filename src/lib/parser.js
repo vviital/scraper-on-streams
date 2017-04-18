@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const url = require('url');
+const _ = require('lodash');
 
 const extractLinks = $ => Array.from(new Set($('a')
   .map((i, elem) => $(elem).attr('href'))
@@ -41,14 +42,6 @@ const getPathCriteria = ($, elem) =>
     .split(';')
     .filter(value => value);
 
-const getMaterials = ($, elem) => {
-  $('.razdatka', elem)
-    .text()
-    .replace(/\n/g, ' ')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-};
-
 const getQuestionResources = ($, elem) =>
   $('strong.Question', elem)
     .parent()
@@ -65,18 +58,17 @@ const getAnswerResources = ($, elem) =>
 function extractQuestions($, { url }) {
   const questions = $('.question')
     .map((i, elem) => ({
-      source: url,
       question: getQuestion($, elem),
-      answer: getAnswer($, elem),
+      answer: _.trimEnd(getAnswer($, elem), '.'),
       pathCriteria: getPathCriteria($, elem),
-      materials: getMaterials($, elem),
       questionResources: getQuestionResources($, elem),
       answerResources: getAnswerResources($, elem),
     }))
     .toArray();
 
   return questions
-    .filter(({ answer }) => answer && !answer.includes(' '));
+    .filter(({ answer, question }) => answer && !answer.includes(' ') 
+      && answer.length < question.length);
 }
 
 

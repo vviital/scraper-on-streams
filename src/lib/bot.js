@@ -64,8 +64,8 @@ module.exports = function scrapper({
       object.urls.filter((transition => queue.indexOf(transition) === -1)));
 
     object.questions
-      .filter(({ question }) => {
-        const hash = farmhash.hash64(question);
+      .filter(({ answer }) => {
+        const hash = farmhash.hash64(answer);
         if (hashSet.has(hash)) return false;
         hashSet.add(hash);
         return true;
