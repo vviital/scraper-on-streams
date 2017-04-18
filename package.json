@@ -3,15 +3,23 @@
   "version": "1.0.0",
   "description": "scraper for websites",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "concat-stream": "^1.6.0",
+    "farmhash": "^1.2.1",
+    "lodash": "^4.17.4",
+    "through2": "^2.0.3",
+    "winston": "^2.3.0"
+  },
   "devDependencies": {
     "eslint": "^3.13.0",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0"
   },
   "scripts": {
+    "start": "node --stack-size=1000000000 ./src/index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
